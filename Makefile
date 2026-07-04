@@ -1,6 +1,12 @@
+# ifneq (,$(wildcard ./.env))
+    include .env
+#     export
+# endif
+
+
 # Variables
-MIGRATIONS_DIR=./migrations
-DB_URL="postgres://nduagoziem:123456789@localhost:5434/postgres?sslmode=disable"
+MIGRATIONS_DIRECTORY=$(MIGRATIONS_DIR)
+DB_URL=$(DATABASE_URL)
 # This finds your Go binary path automatically
 GOBIN=$(shell go env GOPATH)/bin
 MIGRATE=$(GOBIN)/migrate
