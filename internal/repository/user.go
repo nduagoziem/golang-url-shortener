@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nduagoziem/golang-url-shortener/internal/models"
 )
 
@@ -18,14 +18,14 @@ type UserRepositoryInterface interface {
 }
 
 type UserRepository struct {
-	database *pgx.Conn
+	database *pgxpool.Pool
 }
 
 // Enforcing interface compliance at compile-time
 var _ UserRepositoryInterface = (*UserRepository)(nil)
 
 // Database init
-func NewUserRepository(database *pgx.Conn) *UserRepository {
+func NewUserRepository(database *pgxpool.Pool) *UserRepository {
 	return &UserRepository{
 		database: database,
 	}

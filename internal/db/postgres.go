@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPostgresPool(ctx context.Context, databaseURL string) {
+func NewPostgresPool(ctx context.Context, databaseURL string) *pgxpool.Pool {
 
 	pool, err := pgxpool.New(ctx, databaseURL)
 	if err != nil {
@@ -23,4 +23,6 @@ func NewPostgresPool(ctx context.Context, databaseURL string) {
 	}
 
 	log.Println("Database connection successful...")
+
+	return pool
 }

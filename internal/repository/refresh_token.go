@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/nduagoziem/golang-url-shortener/internal/models"
 )
 
@@ -17,14 +17,14 @@ type RefreshTokenRepositoryInterface interface {
 
 // RefreshTokenRepository handles database operations for refresh tokens
 type RefreshTokenRepository struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
 // Enforcing interface compliance at compile-time
 var _ RefreshTokenRepositoryInterface = (*RefreshTokenRepository)(nil)
 
 // NewRefreshTokenRepository creates a new refresh token repository
-func NewRefreshTokenRepository(db *pgx.Conn) *RefreshTokenRepository {
+func NewRefreshTokenRepository(db *pgxpool.Pool) *RefreshTokenRepository {
 	return &RefreshTokenRepository{
 		db: db,
 	}
