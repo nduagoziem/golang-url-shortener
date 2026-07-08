@@ -76,7 +76,7 @@ func main() {
 	r.Post("/api/v1/auth/refresh", func(w http.ResponseWriter, r *http.Request) {
 		authHandler.RefreshToken(r.Context(), w, r)
 	})
-	r.Get("/{code}", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/api/v1/url/{code}", func(w http.ResponseWriter, r *http.Request) {
 		shortenerHandler.RedirectToOriginalUrl(r.Context(), w, r)
 	})
 
