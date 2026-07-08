@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/nduagoziem/golang-url-shortener/internal/auth"
+	"github.com/nduagoziem/golang-url-shortener/internal/models"
 )
 
 // AuthHandler contains HTTP handlers for authentication
@@ -38,6 +40,9 @@ type RegisterResponse struct {
 
 // User registration
 func (h *AuthHandler) Register(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+
+	var u models.User
+
 	// Parse the request body
 	var req RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -51,6 +56,12 @@ func (h *AuthHandler) Register(ctx context.Context, w http.ResponseWriter, r *ht
 		return
 	}
 
+	// Check if email contains "@"
+	if u.IsEmailValid(req.Email) == false {
+		http.Error(w, "Invalid email type", http.StatusBadRequest)
+		return
+	}
+
 	// Call the jwt service to register the user
 	user, err := h.authService.Register(ctx, req.Email, req.FullName, req.Password)
 	if err != nil {
@@ -60,6 +71,7 @@ func (h *AuthHandler) Register(ctx context.Context, w http.ResponseWriter, r *ht
 		}
 
 		http.Error(w, "Error creating user", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 
@@ -75,8 +87,6 @@ func (h *AuthHandler) Register(ctx context.Context, w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(response)
 }
 
-// ---------------------------------//
-// ---------------------------------//
 // LoginRequest represents the login payload
 type LoginRequest struct {
 	Email    string `json:"email"`

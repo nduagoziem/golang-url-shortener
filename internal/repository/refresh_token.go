@@ -57,7 +57,7 @@ func (r *RefreshTokenRepository) CreateRefreshToken(ctx context.Context, userID 
 
 // GetRefreshToken retrieves a refresh token by its token string
 func (r *RefreshTokenRepository) GetRefreshToken(ctx context.Context, tokenString string) (*models.RefreshToken, error) {
-	q := `SELECT id, user_id, token, expires_at, created_at, revoked FROM refresh_token WHERE token $1`
+	q := `SELECT id, user_id, token, expires_at, created_at, revoked FROM refresh_tokens WHERE token = $1`
 
 	var token models.RefreshToken
 

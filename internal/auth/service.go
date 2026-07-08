@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -46,18 +47,23 @@ func (s *AuthService) Register(ctx context.Context, email, fullName, password st
 
 	// Only proceed if the error was "user not found"
 	if !errors.Is(err, sql.ErrNoRows) {
+		fmt.Println(err)
 		return nil, err
 	}
 
 	// Hash the password
 	hashedPassword, err := HashPassword(password)
 	if err != nil {
+		fmt.Println(err)
+
 		return nil, err
 	}
 
 	// Create the user
 	user, err := s.user.CreateUser(ctx, email, fullName, hashedPassword)
 	if err != nil {
+		fmt.Println(err)
+
 		return nil, err
 	}
 

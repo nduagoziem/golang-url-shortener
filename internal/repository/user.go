@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -43,15 +43,12 @@ func (pg *UserRepository) CreateUser(ctx context.Context, email, fullName, passw
 		UpdatedAt:    time.Now(),
 	}
 
-	if user.IsEmailValid(email) == false {
-		return nil, errors.New("Email must contain @")
-	}
-
 	q := `INSERT INTO users (id, email, full_name, password_hash, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)`
 
 	_, err := pg.database.Exec(ctx, q, user.ID, user.Email, user.FullName, user.PasswordHash, user.CreatedAt, user.UpdatedAt)
 
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -63,7 +60,7 @@ func (pg *UserRepository) FindUserByEmail(ctx context.Context, email string) (*m
 	var user models.User
 	var lastLogin sql.NullTime
 
-	q := `SELECT id, email, full_name, password_hash, created_at, updated_at, last_login FROM users WHERE email VALUES $1`
+	q := `SELECT id, email, full_name, password_hash, created_at, updated_at, last_login FROM users WHERE email = $1`
 
 	err := pg.database.QueryRow(ctx, q, email).Scan(
 		&user.ID,
@@ -72,7 +69,7 @@ func (pg *UserRepository) FindUserByEmail(ctx context.Context, email string) (*m
 		&user.PasswordHash,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-		&lastLogin.Valid,
+		&lastLogin,
 	)
 
 	if err != nil {
@@ -90,7 +87,7 @@ func (pg *UserRepository) FindUserByID(ctx context.Context, id string) (*models.
 	var user models.User
 	var lastLogin sql.NullTime
 
-	q := `SELECT id, email, full_name, password_hash, created_at, updated_at, last_login FROM users WHERE id VALUES $1`
+	q := `SELECT id, email, full_name, password_hash, created_at, updated_at, last_login FROM users WHERE id = $1`
 
 	err := pg.database.QueryRow(ctx, q, id).Scan(
 		&user.ID,
@@ -99,7 +96,7 @@ func (pg *UserRepository) FindUserByID(ctx context.Context, id string) (*models.
 		&user.PasswordHash,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-		&lastLogin.Valid,
+		&lastLogin,
 	)
 
 	if err != nil {

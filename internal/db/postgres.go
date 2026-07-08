@@ -14,8 +14,6 @@ func NewPostgresPool(ctx context.Context, databaseURL string) *pgxpool.Pool {
 		log.Fatalf("Unable to connect to the database %v\n", err)
 	}
 
-	defer pool.Close()
-
 	//Testing the connection
 	err = pool.Ping(ctx)
 	if err != nil {
